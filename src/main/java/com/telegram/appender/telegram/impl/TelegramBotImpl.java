@@ -29,14 +29,14 @@ public class TelegramBotImpl implements TelegramBot, Runnable {
                 appenderParameters.getConnectionRequestTimeout());
         HttpClient httpClient = httpClientConfiguration.getHttpRequest();
         Map<String, String> params = new HashMap<>();
-        params.put("chat_id", appenderParameters.getBotToken());
+        params.put("chat_id", appenderParameters.getChatId());
         params.put("text", appenderParameters.getText());
         HttpRequest httpRequest = httpClientConfiguration.buildHttpRequest(url, HttpMethods.POST, params);
         try {
             httpClient.send(httpRequest,
                     HttpResponse.BodyHandlers.ofString());
         } catch (Exception ex) {
-             ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
