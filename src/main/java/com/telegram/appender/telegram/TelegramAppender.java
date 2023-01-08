@@ -16,6 +16,14 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
     private String parseMode = null;
     protected Layout<E> layout;
 
+    public Layout<E> getLayout() {
+        return layout;
+    }
+
+    public void setLayout(Layout<E> layout) {
+        this.layout = layout;
+    }
+
     public String getChatId() {
         return chatId;
     }
