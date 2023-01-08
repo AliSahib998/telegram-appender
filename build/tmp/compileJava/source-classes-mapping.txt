@@ -1,0 +1,13 @@
+com/telegram/appender/Main.java
+ com.telegram.appender.Main
+com/telegram/appender/telegram/impl/TelegramBotImpl.java
+ com.telegram.appender.telegram.impl.TelegramBotImpl
+com/telegram/appender/telegram/TelegramBot.java
+ com.telegram.appender.telegram.TelegramBot
+com/telegram/appender/telegram/TelegramDto.java
+ com.telegram.appender.telegram.TelegramDto
+ com.telegram.appender.telegram.TelegramDto$TelegramDtoBuilder
+com/telegram/appender/config/HttpClientConfiguration.java
+ com.telegram.appender.config.HttpClientConfiguration
+com/telegram/appender/telegram/TelegramConstants.java
+ com.telegram.appender.telegram.TelegramConstants
