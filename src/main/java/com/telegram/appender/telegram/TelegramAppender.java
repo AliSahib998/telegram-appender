@@ -84,7 +84,7 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
             hasError = true;
         }
         if (Objects.isNull(this.layout)) {
-            addStatus(new ErrorStatus("bot token is null", this));
+            addStatus(new ErrorStatus("layout is null", this));
             hasError = true;
         }
         if (!hasError) {
