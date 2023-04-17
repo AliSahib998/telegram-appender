@@ -4,7 +4,7 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import com.telegram.appender.telegram.impl.TelegramBotImpl;
-
+import com.telegram.appender.util.TextUtil;
 import java.util.Objects;
 
 public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
@@ -13,8 +13,19 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
     private String botToken;
     private int connectionTimeout = 60;
     private int requestTimeout = 60;
+    private int maxSize = 4096;
     private String parseMode = null;
     protected Layout<E> layout;
+
+    private static final ProcessLogs processLogs = new ProcessLogs(new TelegramBotImpl());
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
 
     public Layout<E> getLayout() {
         return layout;
@@ -76,15 +87,15 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
     public void start() {
         boolean hasError = false;
         if (Objects.isNull(this.chatId)) {
-            addStatus(new ErrorStatus("chat id is null", this));
+            addStatus(new ErrorStatus("chat id should not be null", this));
             hasError = true;
         }
         if (Objects.isNull(this.botToken)) {
-            addStatus(new ErrorStatus("bot token is null", this));
+            addStatus(new ErrorStatus("bot token should not be null", this));
             hasError = true;
         }
         if (Objects.isNull(this.layout)) {
-            addStatus(new ErrorStatus("layout is null", this));
+            addStatus(new ErrorStatus("layout should not be null", this));
             hasError = true;
         }
         if (!hasError) {
@@ -98,6 +109,8 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
             return;
         }
         String text = layout.doLayout(eventObject);
+        text = TextUtil.configureSize(text, maxSize);
+        //TODO add regex here
         AppenderParameters appenderParameters = AppenderParameters.builder()
                 .botToken(this.botToken)
                 .chatId(this.chatId)
@@ -106,6 +119,11 @@ public class TelegramAppender<E> extends UnsynchronizedAppenderBase<E> {
                 .parseMode(this.parseMode)
                 .text(text)
                 .build();
-        new Thread(new TelegramBotImpl(appenderParameters)).start();
+
+        try {
+            processLogs.putLogs(appenderParameters);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

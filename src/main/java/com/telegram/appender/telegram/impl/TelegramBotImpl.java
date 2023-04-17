@@ -2,25 +2,18 @@ package com.telegram.appender.telegram.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.telegram.appender.config.HttpClientConfiguration;
-import com.telegram.appender.enums.HttpMethods;
 import com.telegram.appender.telegram.AppenderParameters;
 import com.telegram.appender.telegram.TelegramBot;
-import lombok.SneakyThrows;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.telegram.appender.telegram.TelegramConstants.TELEGRAM_SEND_MESSAGE_URL;
 
-public class TelegramBotImpl implements TelegramBot, Runnable {
-
-    private final AppenderParameters appenderParameters;
-
-    public TelegramBotImpl(AppenderParameters appenderParameters) {
-        this.appenderParameters = appenderParameters;
-    }
+public class TelegramBotImpl implements TelegramBot {
 
     @Override
     public void sendMessage(AppenderParameters appenderParameters) throws JsonProcessingException {
@@ -31,18 +24,19 @@ public class TelegramBotImpl implements TelegramBot, Runnable {
         Map<String, String> params = new HashMap<>();
         params.put("chat_id", appenderParameters.getChatId());
         params.put("text", appenderParameters.getText());
-        HttpRequest httpRequest = httpClientConfiguration.buildHttpRequest(url, HttpMethods.POST, params);
+        if (appenderParameters.getParseMode() != null) {
+            params.put("parse_mode", appenderParameters.getParseMode());
+        }
+        HttpRequest httpRequest = httpClientConfiguration.buildHttpRequest(url, "POST", params);
         try {
-            httpClient.send(httpRequest,
-                    HttpResponse.BodyHandlers.ofString());
+            if (Objects.nonNull(httpRequest)) {
+                HttpResponse<String> response = httpClient.send(httpRequest,
+                        HttpResponse.BodyHandlers.ofString());
+                System.out.println(response.body());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    @SneakyThrows
-    @Override
-    public void run() {
-        sendMessage(this.appenderParameters);
-    }
 }
