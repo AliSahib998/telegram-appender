@@ -30,7 +30,7 @@ public class TelegramBotImpl implements TelegramBot {
         HttpRequest httpRequest = httpClientConfiguration.buildHttpRequest(url, "POST", params);
         try {
             if (Objects.nonNull(httpRequest)) {
-                HttpResponse<String> response = httpClient.send(httpRequest,
+                 httpClient.send(httpRequest,
                         HttpResponse.BodyHandlers.ofString());
             }
         } catch (Exception ex) {
