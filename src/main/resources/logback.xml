@@ -8,11 +8,11 @@
 
     <appender name="TELEGRAM"
               class="com.telegram.appender.telegram.TelegramAppender">
-        <botToken>5820379189:AAFDcC3OLqYGTWbhlDHTj_o30cTwnADZC6o</botToken>
-        <chatId>-1001636948073</chatId>
+        <botToken>YOUR TOKEN</botToken>
+        <chatId>YOUR CHAT ID</chatId>
         <Layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>{ "level": "%level" , "app_name" : "${application_name}", "x-trace-id" : "%X{X-Trace-ID}",
-                "thread": "%thread", "message": "%message %ex", "environment": "${application_env}" }</Pattern>
+            <Pattern>{ "level": "%level" , "app_name" : "telegram-appender",
+                "thread": "%thread", "message": "%message %ex" }</Pattern>
         </Layout>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
